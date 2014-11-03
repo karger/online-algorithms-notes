@@ -171,27 +171,22 @@ Lecture.init = function() {
     // [Cloudstitch] Finally we'll manually add the Cloudstitch libraries after
     // building out the HTML.
     // ---------------------------------------------------------------------
-
-    var appkey = 'ted/new-app-4';
-    var datasource = 'http://cloudstitch.io/ted/new-app-4/datasource/sheet';
-    var library = 'http://local-cloudstitch.io:3000/release/cloudstitch.dev.js';
-
     wireUpSurvey();
-    
-    // var mathjax = document.createElement( 'script' );
-    // mathjax.type = 'text/javascript';
-    // mathjax.src = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    // document.head.appendChild( mathjax );
+
+    var mathjax = document.createElement( 'script' );
+    mathjax.type = 'text/javascript';
+    mathjax.src = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    document.head.appendChild( mathjax );
 
     var spreadsheet = document.createElement( 'link' );
     spreadsheet.type = 'cloudstitch/gsheet';
-    spreadsheet.setAttribute('href', datasource);
+    spreadsheet.setAttribute('href', window.datasource);
     document.head.appendChild( spreadsheet );
 
     var cloudstitch = document.createElement( 'script' );
-    cloudstitch.setAttribute('app', appkey);
+    cloudstitch.setAttribute('app', window.appkey);
     cloudstitch.type = 'text/javascript';
-    cloudstitch.src = library;
+    cloudstitch.src = window.library;
     document.head.appendChild( cloudstitch );
 }
 
