@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Online Algorithms</title>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+    </script>
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="lecture.js"></script>
+    <style>
+       .theirs {
+       max-width: 200px;
+       float: right;
+       padding-left: 5px
+       }
+       .clear {
+       clear: both;
+       }
+    </style>
+  </head>
+  <body>
+<h1>Experimental Class</h1> 
+
+This is an experiment in online learning.  I've tried to turn my
+lecture notes interactive.  As you read them, you will find questions
+with boxes asking you for an answer.  Take a little time and see if
+you can figure out the answer, and enter it. Once you've typed an
+answer, click the adjacent button to proceed. 
+<p>
+If you've thought a bit and have no idea, just type a question mark in
+the box and click the button.  Conversely, if you realize you already
+answered a question in a previous box, just type "done" and proceed.
+<p>
+At the end of this exercise, there will be a "save" button for you to
+click.  This will save a file containing your answers (with a weird
+name; that doesn't matter).  Email it to me.  You will not be graded
+on correctness, but you will get a participation grade for doing the
+work.
+
+<div>
+  
+  <h3>Please enter your name: <input class="myName" style="border: 2px solid black; width: 250px;" /></h3>
+</div>
+
+
+<h1>Online Algorithms</h1>
+    Motivation:
+    <ul>
+      <li> until now, our algorithms received entire input, then solved problem
+      <li> (exception: data structures---we'll consider this later)
+      <li> now, suppose input arrives a bit at a time, but we need instant
+        response to each bit of info
+        <ul>
+          <li> e.g. stock market where I want to earn money over time
+          <li> or paging where I want to avoid page faults over time
+        </ul>
+      <li> model as a sequence $\sigma$ of input &ldquo;symbols&rdquo;
+        <ul>
+          <li> algorithm must respond to each symbol
+          <li> e.g. each day, a new stock market price.  do I buy or sell?
+          <li> e.g., on each page fault, what other page do I evict to make room?
+        </ul>
+      <li> What is a &ldquo;good&rdquo; algorithm? depends what we measure.
+      <li> Notice that on some inputs, you can't do well!
+        <ul>
+          <li> stock market that only goes down
+          <li> paging task where every request is a new page (thrashing)
+        </ul>
+      <li> Instead, ask how we <i>could have</i> done
+      <li> if knew whole input \(\sigma\) in advance, often easy to compute optimal response  \(C_{OPT}(\sigma)\)
+        <ul>
+          <li> Stocks: buy at low point, sell at high point
+          <li> Paging: polytime exact algorithm (later)
+        </ul>
+    </ul>
+    <p>
+      Example: the ski rental problem
+      <ul>
+        <li> each time you go skiing, you can rent skis for <span class="text2jax_ignore">$1</span>, or buy for <span class="text2jax_ignore">$</span>$T$.  
+        <li> algorithm has to make a decision each time
+        <li> which should you do?
+        <li> problem: don't know how often we are going to ski.
+        <li> What is optimal if you did know?
+          <ul class="answer"> 
+            <li>if you will go less than \(T\) times, rent each time.  Why?
+            <li class="answer">since you end up paying less than \(T\) that way
+            <li>otherwise buy at the beginning. Why?
+            <li class="answer">since there's no point in ever renting if you will eventually buy
+          </ul>
+      </ul>
+</p>
+
+    <p>
+      Definition: competitive ratio
+      <ul>
+        <li> Compare to full-knowledge optimum \(C_{MIN}(\sigma)\) 
+          <ul>
+            <li> algorithms \(A\) is \(k\)-competitive if for all sequences,  \(C_A(\sigma) \le
+              kC_{MIN}(\sigma)\) 
+            <li> sometimes, to ignore edge effects, define <i>asymptotically</i> \(k\)-competitive if \(C_A(\sigma) \le kC_{MIN}(\sigma)+ O(1)\).
+            <li> generally don't look at additive approximation for same reason as in approximation algorithms: scaling makes them impossible
+            <li>unlike approximation ratios, consensus that competitive ratio \(\gt 1\)
+            <li> idea: &ldquo;regret ratio&rdquo;:  looking back on how you did, how bad do you feel compared to how you could have done
+          </ul>
+        <li> Murphy's law: assume an <i>adversary</i> is choosing the worst possible input sequence
+          <ul>
+            <li> Not necessarily the one with the worst outcome
+            <li> Since adversary may also do badly on that sequence
+            <li> Rather, one with worst outcome (for you) compared to optimal
+            <li> We think of competitve analysis as a (zero sum) game between
+              (your) algorithm and adversary.  Want algorithm with best strategy
+            <li> Supposed to be competitive against all sequences. So, can
+              imagine that adversary is adapting to algorithm's choices (to get
+              worst sequence)
+            <li>Adversary can be thought of as simultaneously designing the bad seequence and their (optimal) response to it.
+          </ul>
+        <li> Defines performance of algorithm without concern for runtime
+          <ul>
+            <li>might also want polynomial time algorithm (e.g., in length of \(\sigma\))
+            <li>but this is generally secondary to being competitive
+            <li>unlike standard sequential algorithms, where everything is trivial given enough time
+          </ul>
+      </ul>
+</p>
+
+    <p>
+      What would be a competitive algorithm for ski rental?
+      <ul class="answer">
+        <li> what are the possible input sequences?
+          <ul class="answer">
+            <li>just one symbol: &ldquo;another ski trip&rdquo;
+            <li>what matters is sequence length $k$
+            <li>ie number of trips
+          </ul>
+        <li> what is the space of sensible algorithms?
+          <ul class="answer">
+            <li> rent for a while, then buy.  Why?
+              <ul class="answer unwrap">
+                <li> since once you buy, no point to rent
+                <li> Only choice is after how many days to buy.
+                <li> So, define algorithm by number of rent days \(d\) before buying
+              </ul>
+          </ul>
+        <li> what are some obvious algorithms, and how do they do? 
+          <ul class="answer">
+            <li> How about buying skis on first trip ($d=0$)?
+              <ul class="answer">
+                <li>Murphy's law: break leg on first trip and never go again
+                <li>I paid \(T\) while OPT payment is 1
+                <li>competitive ratio \(T\)
+              </ul>
+            <li> How about renting forever ($d=\infty$)?
+              <ul class="answer">
+                <li>I become a lifelong skier
+                <li>OPT is to buy skis immediately for \(T\)
+                <li>I end up paying \(\infty\)
+                <li>unbounded competitive ratio.
+              </ul>
+          </ul>
+        <li> Given an algorithm from the space, what is its worst input sequence?
+        <ul>
+          <li> not the sequence where it has the highest cost
+           <li> rather the one with the worst competitive ratio
+        </ul>
+          <ul class="answer">
+            <li> If I rent \(d\) days and then buy, what is my (worst-case) competitive ratio?
+              <ul class="answer">
+                <li>while I rent, my ratio to opt can't get better
+                <li>once I buy, my ratio to opt can't get worse
+                <li>so worst ratio at moment I buy
+                <li>my total cost is <span class="answer">\(d+T\)</span>
+                <li>optimal algorithm knows whether to rent or buy depending on \(d\)
+                <li>so pays <span class="answer">\(\min (d,T)\)</span>
+                <li>so adversary can force ratio <span class="answer">\((d+T)/\min(d,T)\)</span>
+                <li>minimized at <span class="answer">\(d=T\), yielding ratio 2</span>
+                <li>above analysis also shows this is tight
+              </ul>
+          </ul>
+      </ul>
+
+      <h3>Finance</h3>
+
+      General setting
+      <ul>
+        <li>I have something to sell
+        <li>market price announced daily
+        <li>I want to make max possible profit
+        <li>given today's market price, should I sell?
+      </ul>
+</p>
+    <p>
+      Some technical conditions:
+      <ul>
+        <li>duration of game (number of days) might be known or unknown, but need signal on last chance to sell. Why?
+          <ul class="answer">
+            <li>suppose not
+            <li>suppose I don't sell on day 1.  What is adversarial response?
+              <ul class="answer unwrap">
+            <li>adversary can sell on day 1 and close the market
+            <li>I earn nothing---not competitive.
+              </ul>
+          </ul>
+        <li>Need known min price \(m\) and max price \(M\).   Why?
+          <ul class="answer">
+            <li>suppose unbounded
+            <li>suppose I sell.  What is adversarial response?
+              <ul class="answer unwrap">
+                <li>Tomorrow, Murphy will set price infinitely higher 
+                <li>and optimal algorithm will sell the following day
+                <li>not competitive
+              </ul>
+          </ul>
+        <li>define \(\phi=M/m\)
+      </ul>
+</p>
+    <p>
+      Selling (one) car.  What's the best I can do?
+      <ul class="answer">
+        <li>suppose I sell one day at price \(p\).  What does Murphy's law say?
+          <ul class="answer">
+            <li>next day, price rises to \(M\)
+            <li>and adversary sells
+            <li>competitive ratio \(M/p\)
+            <li>so, bad to sell at too-low price
+          </ul>
+        <li>So suppose I <i>don't</i> sell one day at price \(p\).  What does Murphy's law say?
+          <ul class="answer">
+            <li>adversary sells at \(p\)
+            <li>All following days price is \(m\)
+            <li>I sell on last day for \(m\)
+            <li>competitive ratio \(p/m\)
+            <li>so, bad to pass up a high price
+          </ul>
+        <li>OK, what's my best plan?
+          <ul class="answer">
+            <li>sell as soon as offer \(p \gt \sqrt{Mm}\)
+            <li>this balances the two cases above
+            <li>achieves competitive ratio \(\sqrt{M/m} = \sqrt{\phi}\)
+            <li> analysis of cases above says this is best possible
+            <li>since I'm in trouble if I ever sell for less or hold out for more
+          </ul>
+      </ul>
+
+</p>
+    <p>
+      What if I have a large number of peanuts and can sell some each day?
+      <ul>
+        <li>Why might this avoid the bad cases listed for the car sale?
+          <ul class="answer">
+            <li>in car case, price rose the day after I sold it
+            <li>with peanuts, if I sell some, I still have some left
+            <li>So if price rises next day, I'm not doomed
+          </ul>
+        <li>So what should I do?
+          <div class="hint">reserve some for sale at different prices.</div>
+          <ul class="answer">
+            <li> Break into \(\log \phi\) groups of equal amounts
+            <li> Sell group \(i\) first time price exceeds \(m \cdot 2^i\)
+            <li> One group sells for at least half of max occurring price
+            <li> So achieve \(O(\log \phi)\) competitive ratio
+            <li>If only \(\phi\) is known, can still apply algorithm.
+              <ul class="answer">
+                <li>on seeing first price \(p\), know possible range is \(p/\phi, p\phi\)
+                <li>yields range of ratio \(\phi^2\)
+                <li>so still get \(\log\phi^2 =O(\log \phi)\) ratio
+              </ul>
+          </ul>
+      </ul>
+
+      Back to the car.  Is there any way I can sell it in pieces?
+      <span class="hint">Randomize!</span>
+      <ul class="answer">
+        <li>to simplify, can assume I will only sell at prices that are powers of 2 between \(m\) and \(M\).  Why is this reasonable?
+          <ul class="answer">
+            </ul>
+        <li> Choose one at random
+        <li> sell car at first bid exceeding that power
+        <li> with prob \(1/\log \phi\), pick the power of 2 that is within
+          factor 2 of highest offered price.
+        <li> even if know \(\phi\) but don't know \(m\), can just run above alg
+          after seeing first price
+          Can achieve \(\log \phi\) randomized
+      </ul>
+
+      <h3>Load Balancing</h3>
+
+      Definition:
+      <ul>
+        <li>\(m\) machines
+        <li>jobs arrive one at a time with loads/processing times \(p_j\)
+        <li>each must be assigned (permanently) to a machine
+        <li>goal: minimize max assigned load (sum on a machine)
+      </ul>
+</p>
+    <p>
+      Propose an algorithm?
+      <span class="hint">We've seen this problem before!</span>
+      <ul class="answer">
+        <li>This is just \(P||\max C_j\)
+        <li>Consider Graham's rule
+        <li>Always assign to least loaded machine:
+        <li>Analysis same as before.
+          <ul class="answer">
+            <li> OPT has 2 lower bounds: average load and maximum job size.
+            <li> Suppose \(M_1\) has max load \(L\), let \(p_j\) be last job on it.
+            <li> claim every machine has \(L-p_j\) (else wouldn't have assigned
+              last job to \(M_1\))
+            <li> thus total load at least \(\sum p_i = m(L-p_j)+p_j\)
+            <li> thus OPT \(\ge L-(m-1)p_j/m\)
+            <li> so \(L \le OPT + (m-1)p_j/m \le (2-1/m)OPT\)
+          </ul>
+        <li>As we saw before, this is tight
+        <li>many small jobs followed by one large produce large imbalance
+      </ul>
+</p>
+    <p>
+      Can we do better? 
+      <ul>
+        <li>e.g. approximation algorithm's LPT heuristic or enumeration PAS?
+          <ul class="answer">
+            <li>unfortunately these require all the jobs at once
+            <li>to sort or enumrate
+            <li>so not online
+          </ul>
+        <li>So for a long time, nothing better than 2-competitive (for large \(m\))
+      </ul>
+</p>    <p>
+      But there has been progress:
+      <ul>
+        <li>algorithms not too bad, proofs messy!
+          <ul>
+        <li>Bartal et all '95 achieve 2-1/70=1.986: 
+          <ul>
+            <li>paradox: problem with graham is that is tries to balance everything
+            <li>so keep some machines loaded slightly below average
+            <li>So when a large job arrives, you can put it on an underload machine
+            <li>seems like a small improvement, but significant to break factor 2
+          </ul>
+        <li>Karger et al '96: 1.945
+          <ul>
+            <li>consider several different "underloading" thresholds
+            <li>solve a linear program to identify best mix of them
+            <li>and to prove these can always be maintained as more jobs arrive
+          </ul>
+        <li> Albers '97: 1.923
+      </ul>
+      <li>Clearly none of these is the &ldquo;right&rdquo; algorithm
+      <li>something simple is waiting to be found
+</ul>
+
+<h2>Survey Questions</h2>
+
+<table id="survey">
+<tr>
+<td>
+For learning, how does learning this way compare to learning from lecture?
+<td>
+<select id="vs-lecture">
+<option value="0">please select</option>
+<option value="1">1&mdash;This is much worse</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;This is much better</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+For learning, how does this compare to my online notes?
+<td>
+<select id="vs-notes">
+<option value="0">please select</option>
+<option value="1">1&mdash;This is much worse</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;This is much better</option>
+</select>
+</tr>
+<tr>
+<td>
+For learning, how does this compare to a textbook?
+<td>
+<select id="vs-textbook">
+<option value="0">please select</option>
+<option value="1">1&mdash;This is much worse</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;This is much better</option>
+</select>
+</tr>
+<tr>
+<td>
+How appealing would it be to replace all lectures with this type of activity?
+<td>
+<select id="replace-all">
+<option value="0">please select</option>
+<option value="1">1&mdash;very unappealing</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;very appealing</option>
+</select>
+</tr>
+
+<tr>
+<td>
+How appealing would it be require this be done <strong>before</strong>
+each lecture (on the
+same material)?
+<td>
+<select id="use-before-lecture">
+<option value="0">please select</option>
+<option value="1">1&mdash;very unappealing</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;very appealing</option>
+</select>
+</tr>
+
+<tr>
+<td>
+How appealing would it be require this be done <strong>after</strong>
+each lecture (on the same material)?
+<td>
+<select id="use-after-lecture">
+<option value="0">please select</option>
+<option value="1">1&mdash;very unappealing</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;very appealing</option>
+</select>
+</tr>
+
+<tr>
+<td>
+How appealing would it be require this be done <strong>before</strong>
+each lecture and then lecture on <strong>more advanced</strong>
+material in lecture?
+<td>
+<select id="supplement-advanced-lecture">
+<option value="0">please select</option>
+<option value="1">1&mdash;very unappealing</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">3&mdash;About the same</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7&mdash;very appealing</option>
+</select>
+</tr>
+
+</table>
+
+Please give additional feedback on this experiment.  Do you feel that you
+      learned the material?  Was the question/answer mode useful?  Any
+      ways it can be improved?
+<ul class="answer">
+<li>thank you</li>
+</ul>
+
+<h1>Stop Here</h1>
+We'll continue from here on monday.
+
+  </body>
+</html>
+
