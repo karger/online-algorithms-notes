@@ -7,7 +7,20 @@ Lecture.init = function() {
     buttons = $('<span class="buttons"/>')
         .append('<input class="answer-button" value="submit answer" type="submit">'),
     
-    already = $('<input class="already-button" value="already answered" type="submit">')
+    already = $('<input class="already-button" value="already answered" type="submit">'),
+
+    makeHintBox = function(node, hintNum) {
+        node = $(node);
+        node.hide();
+        var btn = $('<input class="show-button" type="button" value="Hint">');
+        btn.on('click', function() {
+            node.show();
+        });
+        node.before(btn);
+        // hints.replaceWith(function () {
+        //     return $('<input class="show-button" type="button" value="Hint">').data('answer',this);
+        // });
+    },
 
     makeAnswerBox = function(node, ansNum, label) {
         // [Cloudstitch] Modified HTML generation below to include some hidden fields
@@ -38,9 +51,9 @@ Lecture.init = function() {
         // followupDiv.appendTo(questionBox);
 
         return questionBox;
-    }
+    },
     
-    , processAnswerButton = function() {
+    processAnswerButton = function() {
         var node = $(this).parents('.answer-box')
         , correct = $(node).data('answer')
         , theirs = $('.answer-input',node).val();
@@ -73,8 +86,8 @@ Lecture.init = function() {
     }
 
     , showAnswer = function (nodeArg, theirs) {
-        var node = $(nodeArg || this)
-        , answer = $(node.data('answer'));
+        var node = $(nodeArg || this);
+        var answer = $(nodeArg.nextSibling);
 
         // Show the answer
         $('.' + node.attr('data-klass')).css('display', 'initial');
@@ -82,11 +95,11 @@ Lecture.init = function() {
 
         $('<div/>').text(theirs).addClass("theirs").prependTo(answer);
         $('<div/>').addClass("clear").appendTo(answer);
-        answer.find(".buttons").append(already);
-        node.after(answer);
-        if (answer.hasClass('unwrap')) {
-            answer.children().unwrap();
-        }
+        $(nodeArg.nextSibling).find(".buttons").append(already);
+        // node.after(answer);
+        // if (answer.hasClass('unwrap')) {
+        //     answer.children().unwrap();
+        // }
     }, wireUpSurvey = function() {
         var survey = $('#survey');
         survey.append('<input class="studentName" type="hidden" connect="survey!col(name)" value="unknown" />');
@@ -159,19 +172,19 @@ Lecture.init = function() {
     answers.each(function (idx, elem) {
         return makeAnswerBox(elem,idx,"Respond");
     });
-    hints.replaceWith(function () {
-        return $('<input class="show-button" type="button" value="Hint">').data('answer',this);
+
+    hints.each(function (idx, elem) {
+        return makeHintBox(elem,idx);
     });
+
+    // hints.replaceWith(function () {
+    //     return $('<input class="show-button" type="button" value="Hint">').data('answer',this);
+    // });
     $('body').on('click','.show-button',function () {showAnswer(this);});
     $('body').on('click','.answer-button',processAnswerButton);
     $('body').on('click','.already-button',processAlreadyButton);
     
     $('body').append('<div>Name: <input class="name" type="textfield"></input></div>');
-    $('body').append('<input type="button" value="Save" class="save"></input>');
-
-    $('body').on('click','.save',function () {
-        saveAll();
-    });
 
     // [Cloudstitch] Finally we'll manually add the Cloudstitch libraries after
     // building out the HTML.
