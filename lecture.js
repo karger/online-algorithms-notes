@@ -11,7 +11,7 @@ Lecture.init = function() {
 
     makeAnswerBox = function(node, ansNum, label) {
         // [Cloudstitch] Modified HTML generation below to include some hidden fields
-        var questionBox = $('<div class="question-box"></div>');
+        var questionBox = $('<ul class="question-box"></ul>');
         node = $(node);
         node.wrap(questionBox);
 
@@ -152,7 +152,7 @@ Lecture.init = function() {
     , answers = $('.answer');
 
     //prevent accidental "submission" of whole page on js errors
-    $('form').submit(function (evt) {
+    $('body').on("submit",'form',function (evt) {
         evt.preventDefault();
     });
 
