@@ -20,7 +20,7 @@ Lecture.init = function() {
         answerForm.append('<input type="hidden" connect="questions!col(question)" value="' + ansNum + '" />');
         answerForm.append('<textarea connect="questions!col(answer)" rows=3 cols=70 class="answer-input"></textarea>');
         buttons.clone().appendTo(answerForm);
-        node.before(answerForm);
+        node.after(answerForm);
 
         var klass = 'followup-' + ansNum;
         node.addClass(klass);
@@ -77,7 +77,7 @@ Lecture.init = function() {
         , answer = $(node.data('answer'));
 
         // Show the answer
-        $('.' + node.attr('data-klass')).css('display', 'block');
+        $('.' + node.attr('data-klass')).css('display', 'initial');
         node.css('display', 'none');
 
         $('<div/>').text(theirs).addClass("theirs").prependTo(answer);
@@ -150,6 +150,11 @@ Lecture.init = function() {
 
     , hints = $('.hint')
     , answers = $('.answer');
+
+    //prevent accidental "submission" of whole page on js errors
+    $('form').submit(function (evt) {
+        evt.preventDefault();
+    });
 
     answers.each(function (idx, elem) {
         return makeAnswerBox(elem,idx,"Respond");

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -17,42 +16,47 @@
     </script>
     <script src="lecture.js"></script>
     <style>
-       .theirs {
-       max-width: 200px;
-       float: right;
-       padding-left: 5px
-       }
-       .clear {
-       clear: both;
-       }
+      .theirs {
+      max-width: 200px;
+      float: right;
+      padding-left: 5px
+      }
+      .clear {
+      clear: both;
+      }
     </style>
   </head>
   <body>
-<h1>Experimental Class</h1> 
+    <h1>Experimental Class</h1> 
 
-This is an experiment in online learning.  I've tried to turn my
-lecture notes interactive.  As you read them, you will find questions
-with boxes asking you for an answer.  Take a little time and see if
-you can figure out the answer, and enter it. Once you've typed an
-answer, click the adjacent button to proceed. 
-<p>
-If you've thought a bit and have no idea, just type a question mark in
-the box and click the button.  Conversely, if you realize you already
-answered a question in a previous box, just type "done" and proceed.
-<p>
-At the end of this exercise, there will be a "save" button for you to
-click.  This will save a file containing your answers (with a weird
-name; that doesn't matter).  Email it to me.  You will not be graded
-on correctness, but you will get a participation grade for doing the
-work.
+    This is an experiment in online learning.  I've tried to turn my
+    lecture notes interactive.  As you read them, you will find questions
+    with boxes asking you for an answer.  Take a little time and see if
+    you can figure out the answer, and enter it. Once you've typed an
+    answer, click the adjacent button to proceed. 
+    <p>
+      Questions start general, then "unpack" into simpler pieces.  Try to
+      answer the general question, but if you can't you'll be able to answer
+      it in the smaller pieces.</p>
+    <p>
+      If you've thought a bit and have no idea, just type a question mark in
+      the box and click the button to get more help.  Conversely, if you
+      realize you already answered a question in a previous box, just type
+      "done" and proceed. </p>
+    <p>
+      At the end of this exercise, there will be a "save" button for you to
+      click.  This will save a file containing your answers (with a weird
+      name; that doesn't matter).  Email it to me.  You will not be graded
+      on correctness, but you will get a participation grade for doing the
+      work.</p>
 
-<div>
-  
-  <h3>Please enter your name: <input class="myName" style="border: 2px solid black; width: 250px;" /></h3>
-</div>
+    <div>
+      
+      <h3>Please enter your name: <input class="myName" style="border: 2px solid black; width: 250px;" /></h3>
+    </div>
 
 
-<h1>Online Algorithms</h1>
+    <h1>Online Algorithms</h1>
     Motivation:
     <ul>
       <li> until now, our algorithms received entire input, then solved problem
@@ -97,14 +101,14 @@ work.
             <li class="answer">since there's no point in ever renting if you will eventually buy
           </ul>
       </ul>
-</p>
+    </p>
 
     <p>
       Definition: competitive ratio
       <ul>
         <li> Compare to full-knowledge optimum \(C_{MIN}(\sigma)\) 
           <ul>
-            <li> algorithms \(A\) is \(k\)-competitive if for all sequences,  \(C_A(\sigma) \le
+            <li> algorithms \(A\) is <strong>\(k\)-competitive</strong> if for all sequences,  \(C_A(\sigma) \le
               kC_{MIN}(\sigma)\) 
             <li> sometimes, to ignore edge effects, define <i>asymptotically</i> \(k\)-competitive if \(C_A(\sigma) \le kC_{MIN}(\sigma)+ O(1)\).
             <li> generally don't look at additive approximation for same reason as in approximation algorithms: scaling makes them impossible
@@ -130,7 +134,7 @@ work.
             <li>unlike standard sequential algorithms, where everything is trivial given enough time
           </ul>
       </ul>
-</p>
+    </p>
 
     <p>
       What would be a competitive algorithm for ski rental?
@@ -138,8 +142,8 @@ work.
         <li> what are the possible input sequences?
           <ul class="answer">
             <li>just one symbol: &ldquo;another ski trip&rdquo;
-            <li>what matters is sequence length $k$
-            <li>ie number of trips
+            <li>all that matters is sequence length $k$
+            <li>i.e. number of trips
           </ul>
         <li> what is the space of sensible algorithms?
           <ul class="answer">
@@ -150,15 +154,16 @@ work.
                 <li> So, define algorithm by number of rent days \(d\) before buying
               </ul>
           </ul>
-        <li> what are some obvious algorithms, and how do they do? 
+        <li> what are some easy edge cases for \(d\), and how do they do? 
           <ul class="answer">
-            <li> How about buying skis on first trip ($d=0$)?
+            <li class="hint"> How about buying skis on first trip \((d=0)\)?  What
+              is the worst-case ratio?
               <ul class="answer">
                 <li>Murphy's law: break leg on first trip and never go again
                 <li>I paid \(T\) while OPT payment is 1
                 <li>competitive ratio \(T\)
               </ul>
-            <li> How about renting forever ($d=\infty$)?
+            <li class="hint"> How about never buying ($d=\infty$)?
               <ul class="answer">
                 <li>I become a lifelong skier
                 <li>OPT is to buy skis immediately for \(T\)
@@ -166,22 +171,28 @@ work.
                 <li>unbounded competitive ratio.
               </ul>
           </ul>
-        <li> Given an algorithm from the space, what is its worst input sequence?
-        <ul>
-          <li> not the sequence where it has the highest cost
-           <li> rather the one with the worst competitive ratio
-        </ul>
-          <ul class="answer">
-            <li> If I rent \(d\) days and then buy, what is my (worst-case) competitive ratio?
+        <li>What's the more general analysis?
+          <ul>
+            <li> For strategy that rents \(d\) days and then buys,
+              what is the (worst-case) competitive ratio?
               <ul class="answer">
-                <li>while I rent, my ratio to opt can't get better
-                <li>once I buy, my ratio to opt can't get worse
-                <li>so worst ratio at moment I buy
+                <li>while I rent, my ratio to opt can't get
+                  better. Why?
+                  <ul class="answer">
+                    <li>if opt is renting then we are both paying same, ratio 1
+                    <li>if opt bought, ratio is increasing
+                  </ul>
+                <li>once I buy, my ratio to opt can't get worse  why?
+                  <ul class="answer">
+                    <li>I stop paying
+                    <li>OPT may continue to pay but that only helps me
+                  </ul>
+                <li>so the worst ratio is at the moment I buy
                 <li>my total cost is <span class="answer">\(d+T\)</span>
                 <li>optimal algorithm knows whether to rent or buy depending on \(d\)
                 <li>so pays <span class="answer">\(\min (d,T)\)</span>
                 <li>so adversary can force ratio <span class="answer">\((d+T)/\min(d,T)\)</span>
-                <li>minimized at <span class="answer">\(d=T\), yielding ratio 2</span>
+                <li>minimized at \(d=\) <span class="answer">\(T\), yielding ratio 2</span>
                 <li>above analysis also shows this is tight
               </ul>
           </ul>
@@ -196,7 +207,7 @@ work.
         <li>I want to make max possible profit
         <li>given today's market price, should I sell?
       </ul>
-</p>
+    </p>
     <p>
       Some technical conditions:
       <ul>
@@ -205,26 +216,33 @@ work.
             <li>suppose not
             <li>suppose I don't sell on day 1.  What is adversarial response?
               <ul class="answer unwrap">
-            <li>adversary can sell on day 1 and close the market
-            <li>I earn nothing---not competitive.
+                <li>adversary can sell on day 1 and close the market
+                <li>I earn nothing---not competitive.
               </ul>
           </ul>
         <li>Need known min price \(m\) and max price \(M\).   Why?
           <ul class="answer">
-            <li>suppose unbounded
+            <li>suppose unbounded prices
             <li>suppose I sell.  What is adversarial response?
               <ul class="answer unwrap">
                 <li>Tomorrow, Murphy will set price infinitely higher 
-                <li>and optimal algorithm will sell the following day
+                <li>and optimal algorithm will sell
                 <li>not competitive
               </ul>
           </ul>
         <li>define \(\phi=M/m\)
       </ul>
-</p>
+    </p>
     <p>
       Selling (one) car.  What's the best I can do?
       <ul class="answer">
+        <li>What is space of online strategies?
+        <li class="hint">All you have is today's price, and past prices irrelevant</li>
+        <ul class="answer">
+          <li>pick a price
+          <li>sell when you hit that price
+          <li>or on the last day if that price is never reached.
+        </ul>
         <li>suppose I sell one day at price \(p\).  What does Murphy's law say?
           <ul class="answer">
             <li>next day, price rises to \(M\)
@@ -232,7 +250,7 @@ work.
             <li>competitive ratio \(M/p\)
             <li>so, bad to sell at too-low price
           </ul>
-        <li>So suppose I <i>don't</i> sell one day at price \(p\).  What does Murphy's law say?
+        <li>So suppose I <i>don't</i> sell when price hits \(p\).  What does Murphy's law say?
           <ul class="answer">
             <li>adversary sells at \(p\)
             <li>All following days price is \(m\)
@@ -240,38 +258,89 @@ work.
             <li>competitive ratio \(p/m\)
             <li>so, bad to pass up a high price
           </ul>
-        <li>OK, what's my best plan?
+        <li>Note adversary can always force the worse of these two outcomes.
+        <li>So, what's my best plan?
+        <li class="hint">Balance the two outcomes above
           <ul class="answer">
             <li>sell as soon as offer \(p \gt \sqrt{Mm}\)
             <li>this balances the two cases above
             <li>achieves competitive ratio \(\sqrt{M/m} = \sqrt{\phi}\)
             <li> analysis of cases above says this is best possible
             <li>since I'm in trouble if I ever sell for less or hold out for more
+            <li>adversary can always force ratio \(\max(M/p,p/M\)
+            <li>so I choose \(p\) to balance this
           </ul>
       </ul>
 
-</p>
+    </p>
     <p>
-      What if I have a large number of peanuts and can sell some each day?
+      What if I have a large number of peanuts to sell in a similar
+      market?
       <ul>
-        <li>Why might this avoid the bad cases listed for the car sale?
+        <li class="hint">What additional options do I have compared to one car?
+          <ul class="answer">
+            <li>sell some on different days, keep some for other days
+          </ul>
+        <li class="hint">Why might this avoid the bad cases listed for the car sale?
           <ul class="answer">
             <li>in car case, price rose the day after I sold it
             <li>with peanuts, if I sell some, I still have some left
             <li>So if price rises next day, I'm not doomed
           </ul>
-        <li>So what should I do?
-          <div class="hint">reserve some for sale at different prices.</div>
+        <li class="hint">So what should I do?
+          Reserve some for sale at different prices.
           <ul class="answer">
-            <li> Break into \(\log \phi\) groups of equal amounts
-            <li> Sell group \(i\) first time price exceeds \(m \cdot 2^i\)
-            <li> One group sells for at least half of max occurring price
-            <li> So achieve \(O(\log \phi)\) competitive ratio
-            <li>If only \(\phi\) is known, can still apply algorithm.
+            <li>First step: suppose I have two peanuts.
+              <ul>
+                <li>What space of possible algorithms?
+                  <ul class="answer">
+                    <li>a first price \(p\) where I sell one peanut</li>
+                    <li>a second price \(q\) where I sell a second one</li>
+                  </ul>
+                <li>What values optimize competitive ratio
+                  (asymptotically)?  
+                <li class="hint">With only two peanuts your income is
+                  asymptotically equal to the larger of the two sales
+                  <ul class="answer">
+                    <li>To achieve best ratio with one car, we split the
+                      range \(m,m\ldots,M\) at its geometric &ldquo;midpoint&rdquo;
+                    <li>With two peanuts we can split interval into 3
+                      pieces instead of 2
+                    <li>What's the best way?
+                      <ul class="answer">
+                        <li>use sale prices at \(p=m(M/m)^{1/3}=m^{2/3}M^{1/3}\)
+                          and \(q=m(M/m)^{2/3}=m^{1/3}M^{2/3}\)
+                        <li>what ratio is achieved?
+                          <ul class="answer">
+                            <li>If price ever passes \(q\) we sell for that
+                            <li>Adversary gets at most \(2M\)
+                            <li>so we achieve ratio \(2M/q = 2(M/m)^{1/3}\)
+                            <li>If price never passes \(q\) but passes \(p\) then
+                              we get \(p\) while adversary gets at most \(2q\)
+                            <li>So ratio \(2q/p=2(M/m)^{1/3}\)
+                            <li>If price never passes \(p\) we get \(m\) while
+                              adversary gets at most \(2p\)
+                            <li>Again ratio \(2p/m=2(M/m)^{1/3}\)
+                          </ul>                
+                      </ul>
+                  </ul>
+              </ul>
+            <li>general solution?
               <ul class="answer">
-                <li>on seeing first price \(p\), know possible range is \(p/\phi, p\phi\)
-                <li>yields range of ratio \(\phi^2\)
-                <li>so still get \(\log\phi^2 =O(\log \phi)\) ratio
+                <li>to simplify, assume I will only sell at prices that are powers of 2 between \(m\) and \(M\).  Why is this reasonable?
+                  <ul class="answer">
+                    <li>It only costs a factor of 2 in my profits
+                  </ul>
+                <li> Break into \(\log \phi\) groups of equal amounts
+                <li> Sell group \(i\) first time price exceeds \(m \cdot 2^i\)
+                <li> One group sells for at least half of max occurring price
+                <li> So achieve \(O(\log \phi)\) competitive ratio
+                <li>If only \(\phi\) is known, can still apply algorithm.
+                  <ul class="answer">
+                    <li>on seeing first price \(p\), know possible range is \(p/\phi, p\phi\)
+                    <li>yields range of ratio \(\phi^2\)
+                    <li>so still get \(\log\phi^2 =O(\log \phi)\) ratio
+                  </ul>
               </ul>
           </ul>
       </ul>
@@ -279,9 +348,7 @@ work.
       Back to the car.  Is there any way I can sell it in pieces?
       <span class="hint">Randomize!</span>
       <ul class="answer">
-        <li>to simplify, can assume I will only sell at prices that are powers of 2 between \(m\) and \(M\).  Why is this reasonable?
-          <ul class="answer">
-            </ul>
+        <li>consider powers of 2 between \(m\) and \(M\)
         <li> Choose one at random
         <li> sell car at first bid exceeding that power
         <li> with prob \(1/\log \phi\), pick the power of 2 that is within
@@ -300,7 +367,7 @@ work.
         <li>each must be assigned (permanently) to a machine
         <li>goal: minimize max assigned load (sum on a machine)
       </ul>
-</p>
+    </p>
     <p>
       Propose an algorithm?
       <span class="hint">We've seen this problem before!</span>
@@ -321,7 +388,7 @@ work.
         <li>As we saw before, this is tight
         <li>many small jobs followed by one large produce large imbalance
       </ul>
-</p>
+    </p>
     <p>
       Can we do better? 
       <ul>
@@ -333,159 +400,159 @@ work.
           </ul>
         <li>So for a long time, nothing better than 2-competitive (for large \(m\))
       </ul>
-</p>    <p>
+    </p>    <p>
       But there has been progress:
       <ul>
         <li>algorithms not too bad, proofs messy!
           <ul>
-        <li>Bartal et all '95 achieve 2-1/70=1.986: 
-          <ul>
-            <li>paradox: problem with graham is that is tries to balance everything
-            <li>so keep some machines loaded slightly below average
-            <li>So when a large job arrives, you can put it on an underload machine
-            <li>seems like a small improvement, but significant to break factor 2
+            <li>Bartal et all '95 achieve 2-1/70=1.986: 
+              <ul>
+                <li>paradox: problem with graham is that is tries to balance everything
+                <li>so keep some machines loaded slightly below average
+                <li>So when a large job arrives, you can put it on an underload machine
+                <li>seems like a small improvement, but significant to break factor 2
+              </ul>
+            <li>Karger et al '96: 1.945
+              <ul>
+                <li>consider several different "underloading" thresholds
+                <li>solve a linear program to identify best mix of them
+                <li>and to prove these can always be maintained as more jobs arrive
+              </ul>
+            <li> Albers '97: 1.923
           </ul>
-        <li>Karger et al '96: 1.945
-          <ul>
-            <li>consider several different "underloading" thresholds
-            <li>solve a linear program to identify best mix of them
-            <li>and to prove these can always be maintained as more jobs arrive
-          </ul>
-        <li> Albers '97: 1.923
+        <li>Clearly none of these is the &ldquo;right&rdquo; algorithm
+        <li>something simple is waiting to be found
       </ul>
-      <li>Clearly none of these is the &ldquo;right&rdquo; algorithm
-      <li>something simple is waiting to be found
-</ul>
 
-<h2>Survey Questions</h2>
+      <h2>Survey Questions</h2>
 
-<table id="survey">
-<tr>
-<td>
-For learning, how does learning this way compare to learning from lecture?
-<td>
-<select id="vs-lecture">
-<option value="0">please select</option>
-<option value="1">1&mdash;This is much worse</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;This is much better</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>
-For learning, how does this compare to my online notes?
-<td>
-<select id="vs-notes">
-<option value="0">please select</option>
-<option value="1">1&mdash;This is much worse</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;This is much better</option>
-</select>
-</tr>
-<tr>
-<td>
-For learning, how does this compare to a textbook?
-<td>
-<select id="vs-textbook">
-<option value="0">please select</option>
-<option value="1">1&mdash;This is much worse</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;This is much better</option>
-</select>
-</tr>
-<tr>
-<td>
-How appealing would it be to replace all lectures with this type of activity?
-<td>
-<select id="replace-all">
-<option value="0">please select</option>
-<option value="1">1&mdash;very unappealing</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;very appealing</option>
-</select>
-</tr>
+      <table id="survey">
+        <tr>
+          <td>
+            For learning, how does learning this way compare to learning from lecture?
+          <td>
+            <select id="vs-lecture">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;This is much worse</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;This is much better</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            For learning, how does this compare to my online notes?
+          <td>
+            <select id="vs-notes">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;This is much worse</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;This is much better</option>
+            </select>
+        </tr>
+        <tr>
+          <td>
+            For learning, how does this compare to a textbook?
+          <td>
+            <select id="vs-textbook">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;This is much worse</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;This is much better</option>
+            </select>
+        </tr>
+        <tr>
+          <td>
+            How appealing would it be to replace all lectures with this type of activity?
+          <td>
+            <select id="replace-all">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;very unappealing</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;very appealing</option>
+            </select>
+        </tr>
 
-<tr>
-<td>
-How appealing would it be require this be done <strong>before</strong>
-each lecture (on the
-same material)?
-<td>
-<select id="use-before-lecture">
-<option value="0">please select</option>
-<option value="1">1&mdash;very unappealing</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;very appealing</option>
-</select>
-</tr>
+        <tr>
+          <td>
+            How appealing would it be require this be done <strong>before</strong>
+            each lecture (on the
+            same material)?
+          <td>
+            <select id="use-before-lecture">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;very unappealing</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;very appealing</option>
+            </select>
+        </tr>
 
-<tr>
-<td>
-How appealing would it be require this be done <strong>after</strong>
-each lecture (on the same material)?
-<td>
-<select id="use-after-lecture">
-<option value="0">please select</option>
-<option value="1">1&mdash;very unappealing</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;very appealing</option>
-</select>
-</tr>
+        <tr>
+          <td>
+            How appealing would it be require this be done <strong>after</strong>
+            each lecture (on the same material)?
+          <td>
+            <select id="use-after-lecture">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;very unappealing</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;very appealing</option>
+            </select>
+        </tr>
 
-<tr>
-<td>
-How appealing would it be require this be done <strong>before</strong>
-each lecture and then lecture on <strong>more advanced</strong>
-material in lecture?
-<td>
-<select id="supplement-advanced-lecture">
-<option value="0">please select</option>
-<option value="1">1&mdash;very unappealing</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">3&mdash;About the same</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7&mdash;very appealing</option>
-</select>
-</tr>
+        <tr>
+          <td>
+            How appealing would it be require this be done <strong>before</strong>
+            each lecture and then lecture on <strong>more advanced</strong>
+            material in lecture?
+          <td>
+            <select id="supplement-advanced-lecture">
+              <option value="0">please select</option>
+              <option value="1">1&mdash;very unappealing</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">3&mdash;About the same</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7&mdash;very appealing</option>
+            </select>
+        </tr>
 
-</table>
+      </table>
 
-Please give additional feedback on this experiment.  Do you feel that you
+      Please give additional feedback on this experiment.  Do you feel that you
       learned the material?  Was the question/answer mode useful?  Any
       ways it can be improved?
-<ul class="answer">
-<li>thank you</li>
-</ul>
+      <ul class="answer">
+        <li>thank you</li>
+      </ul>
 
-<h1>Stop Here</h1>
-We'll continue from here on monday.
+      <h1>Stop Here</h1>
+      We'll continue from here on monday.
 
   </body>
 </html>
